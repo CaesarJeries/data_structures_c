@@ -1,6 +1,7 @@
 #ifndef __LINKED_LIST_H__
 #define __LINKED_LIST_H__
 
+#include <stddef.h> // size_t, ssize_t
 
 typedef struct __linked_list LinkedList;
 
@@ -34,6 +35,5 @@ void* linkedListPop(LinkedList* list, LinkedListStatus* status);
 
 LinkedListStatus linkedListPushFront(LinkedList* list, void* element);
 void* linkedListPopFront(LinkedList* list, LinkedListStatus* status);
-
 
 #endif // __LINKED_LIST_H__
