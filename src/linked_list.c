@@ -169,3 +169,28 @@ ssize_t linkedListIndexOf(const LinkedList* list, const void* element) {
 
     return -1;
 }
+
+LinkedListStatus linkedListPush(LinkedList* list, void* element) {
+    assert(list);
+
+    void* new_element = list->copy(element);
+    if (!new_element) {
+        return LINKED_LIST_MEM_ERROR;
+    }
+
+    LinkedListNode* new_node = nodeCreate(new_element);
+    if (!new_node) {
+        list->free(new_element);
+        return LINKED_LIST_MEM_ERROR;
+    }
+
+    LinkedList* before_tail = list->tail->prev;
+
+    before_tail->next = new_node;
+    new_node->prev = before_tail;
+
+    tail->prev = new_node;
+    new_node->next = tail;
+
+    return LINKED_LIST_SUCCESS;
+}
