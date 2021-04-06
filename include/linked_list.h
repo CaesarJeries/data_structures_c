@@ -31,7 +31,7 @@ LinkedListStatus linkedListInsertBefore(LinkedList* list, void* anchor, const vo
 LinkedListStatus linkedListInsertAfter(LinkedList* list, void* anchor, const void* new_element);
 
 LinkedListStatus linkedListPush(LinkedList* list, void* element);
-void* linkedListPop(LinkedList* list, LinkedListStatus* status);
+void* linkedListPop(LinkedList* list);
 
 LinkedListStatus linkedListPushFront(LinkedList* list, void* element);
 void* linkedListPopFront(LinkedList* list, LinkedListStatus* status);

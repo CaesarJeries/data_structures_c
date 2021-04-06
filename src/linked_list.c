@@ -194,3 +194,24 @@ LinkedListStatus linkedListPush(LinkedList* list, void* element) {
 
     return LINKED_LIST_SUCCESS;
 }
+
+void* linkedListPop(LinkedList* list) {
+    assert(list);
+
+    if (list->head->next == list->tail) {
+        // list is empty
+        return NULL;
+    }
+
+    LinkedListNode* to_delete = list->tail->prev;
+    LinkedListNode* before_tail = to_delete->prev;
+    void* data = to_delete->data;
+    
+    to_delete->data = NULL;
+    nodeDestroy(to_delete, NULL); to_delete = NULL;
+
+    before_tail->next = list->tail;
+    list->tail->prev = before_tail;
+
+   return data; 
+}
