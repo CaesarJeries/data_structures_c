@@ -82,3 +82,32 @@ void linkedListDestroy(LinkedList* list) {
         free(list);
     }
 }
+
+LinkedList* linkedListClone(const LinkedList* list) {
+    LinkedList* new_list = linkedListCreate(list->copy, list->compare, list->free);
+    if (new_list) {
+        LinkedListNode* src_node_itr = list->head->next;
+        while (src_node_itr != list->tail) {
+            if (LINKED_LIST_SUCCESS != linkedListPush(new_list, src_node_itr->data)) {
+                linkedListDestroy(new_list);
+                new_list = NULL;
+                break;
+            }
+
+            src_node_itr = src_node_itr->next;
+        }
+    }
+
+    return new_list;
+}
+
+size_t linkedListSize(const LinkedList* list) {
+    size_t count = 0;
+    LinkedListNode* node_itr = list->head->next;
+    while (node_itr != list->tail) {
+        ++count;
+        node_itr = node_itr->next;
+    }
+
+    return count;
+}
