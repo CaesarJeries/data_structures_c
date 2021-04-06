@@ -84,6 +84,8 @@ void linkedListDestroy(LinkedList* list) {
 }
 
 LinkedList* linkedListClone(const LinkedList* list) {
+    assert(list);
+
     LinkedList* new_list = linkedListCreate(list->copy, list->compare, list->free);
     if (new_list) {
         LinkedListNode* src_node_itr = list->head->next;
@@ -101,13 +103,71 @@ LinkedList* linkedListClone(const LinkedList* list) {
     return new_list;
 }
 
-size_t linkedListSize(const LinkedList* list) {
-    size_t count = 0;
+
+typedef int (*op_func_t)(void* element, void* params);
+
+static int for_each(LinkedList* list, op_func_t op, void* params) {
     LinkedListNode* node_itr = list->head->next;
     while (node_itr != list->tail) {
-        ++count;
+        int result = op(node_itr->data, params);
+
+        if (0 != result) {
+            return result;
+        }
+
         node_itr = node_itr->next;
     }
 
+    return 0;
+}
+
+static int element_counter(void* ignored, void* params) {
+    size_t* counter = params;
+
+    ++(*counter);
+
+    return 0;
+}
+
+size_t linkedListSize(const LinkedList* list) {
+    assert(list);
+
+    size_t count = 0;
+    for_each(list, element_counter, &count);
+
     return count;
+}
+
+
+typedef struct {
+    size_t index;
+    const void* target_value;
+    cmp_func_t compare;
+
+} ElementFinderParams;
+
+
+static int element_finder(void* element, void* params) {
+    ElementFinderParams* param_pack = params;
+
+    if (0 == param_pack->compare(element, param_pack->target_value)) {
+        return 1;
+    }
+    
+    ++(param_pack->index);
+
+    return 0;
+}
+
+ssize_t linkedListIndexOf(const LinkedList* list, const void* element) {
+    assert(list); assert(element);
+
+    ElementFinderParams params = {0, element, list->compare};
+    
+    int result = for_each((LinkedList*) list, element_finder, &params);
+    if (result != 0) {
+        return params->index;
+    }
+
+    return -1;
 }

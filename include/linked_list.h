@@ -21,7 +21,7 @@ void linkedListDestroy(LinkedList* list);
 LinkedList* linkedListClone(const LinkedList* list);
 
 size_t linkedListSize(const LinkedList* list);
-size_t linkedListIndexOf(const LinkedList* list, const void* element);
+ssize_t linkedListIndexOf(const LinkedList* list, const void* element);
 
 void* linkedListGetAt(const LinkedList* list, size_t index);
 void* linkedListRemoveAt(LinkedList* list, size_t index);
