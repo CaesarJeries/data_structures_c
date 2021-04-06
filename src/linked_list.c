@@ -33,7 +33,7 @@ struct __linked_list {
     LinkedListNode* head;
     LinkedListNode* tail;
 
-    copy_funct_t copy;
+    copy_func_t copy;
     cmp_func_t compare;
     free_func_t free;
 };
@@ -44,8 +44,6 @@ LinkedList* linkedListCreate(copy_func_t copy_func, free_func_t free_func, cmp_f
 
     LinkedList* new_list = malloc(sizeof(*new_list));
     if (new_list) {
-        new_list->data = NULL;
-        
         new_list->head = nodeCreate(NULL);
         if (NULL == new_list->head) {
             linkedListDestroy(new_list);
@@ -86,7 +84,7 @@ void linkedListDestroy(LinkedList* list) {
 LinkedList* linkedListClone(const LinkedList* list) {
     assert(list);
 
-    LinkedList* new_list = linkedListCreate(list->copy, list->compare, list->free);
+    LinkedList* new_list = linkedListCreate(list->copy, list->free, list->compare);
     if (new_list) {
         LinkedListNode* src_node_itr = list->head->next;
         while (src_node_itr != list->tail) {
@@ -133,14 +131,14 @@ size_t linkedListSize(const LinkedList* list) {
     assert(list);
 
     size_t count = 0;
-    for_each(list, element_counter, &count);
+    for_each((LinkedList*) list, element_counter, &count);
 
     return count;
 }
 
 
 typedef struct {
-    size_t index;
+    ssize_t index;
     const void* target_value;
     cmp_func_t compare;
 
@@ -166,7 +164,7 @@ ssize_t linkedListIndexOf(const LinkedList* list, const void* element) {
     
     int result = for_each((LinkedList*) list, element_finder, &params);
     if (result != 0) {
-        return params->index;
+        return params.index;
     }
 
     return -1;
