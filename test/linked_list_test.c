@@ -65,6 +65,22 @@ START_TEST(test_list_index_of) {
 }
 END_TEST
 
+START_TEST(test_list_get_at) {
+    LinkedList* list = linkedListCreate(str_copy, str_free, str_cmp);
+
+    ck_assert_ptr_null(linkedListGetAt(list, 0));
+    ck_assert_ptr_null(linkedListGetAt(list, 1));
+
+    linkedListPush(list, "AAA");
+    linkedListPush(list, "BBB");
+
+    ck_assert_str_eq(linkedListGetAt(list, 0), "AAA");
+    ck_assert_str_eq(linkedListGetAt(list, 1), "BBB");
+    ck_assert_ptr_null(linkedListGetAt(list, 2));
+
+    linkedListDestroy(list);
+}
+END_TEST
  
 Suite* list_tests_suite(void) {
     Suite* s = suite_create("List Tests");
@@ -75,6 +91,7 @@ Suite* list_tests_suite(void) {
     tcase_add_test(tc_core, test_list_create);
     tcase_add_test(tc_core, test_list_size);
     tcase_add_test(tc_core, test_list_index_of);
+    tcase_add_test(tc_core, test_list_get_at);
     suite_add_tcase(s, tc_core);
 
     return s;

@@ -174,6 +174,32 @@ ssize_t linkedListIndexOf(const LinkedList* list, const void* element) {
     return -1;
 }
 
+typedef struct {
+    void* target;
+    size_t target_idx;
+    size_t current_idx;
+} ElementFetcherParams;
+
+static int element_fetcher(void* element, void* p) {
+    ElementFetcherParams* params = p;
+
+    if (params->current_idx == params->target_idx) {
+        params->target = element;
+        return 1;
+    }
+
+    ++params->current_idx;
+    return 0;
+}
+
+void* linkedListGetAt(const LinkedList* list, size_t index) {
+    ElementFetcherParams params = {NULL, index, 0};
+
+    for_each((LinkedList*) list, element_fetcher, &params);
+
+    return params.target;
+}
+
 LinkedListStatus linkedListPush(LinkedList* list, const void* element) {
     assert(list);
 
