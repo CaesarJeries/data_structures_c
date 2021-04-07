@@ -39,15 +39,32 @@ START_TEST(test_list_size) {
     ck_assert_uint_eq(linkedListSize(list), 0);
     
     linkedListPush(list, "AAA");
-    //ck_assert_uint_eq(linkedListSize(list), 1);
+    ck_assert_uint_eq(linkedListSize(list), 1);
     
-    //linkedListPush(list, "BBB");
-    //ck_assert_uint_eq(linkedListSize(list), 2);
+    linkedListPush(list, "BBB");
+    ck_assert_uint_eq(linkedListSize(list), 2);
 
     linkedListDestroy(list);
 }
 END_TEST
- 
+
+
+START_TEST(test_list_index_of) {
+    LinkedList* list = linkedListCreate(str_copy, str_free, str_cmp);
+
+    ck_assert_uint_eq(linkedListIndexOf(list, "AAAA"), -1);
+
+    linkedListPush(list, "AAA");
+    linkedListPush(list, "BBB");
+
+    ck_assert_uint_eq(linkedListIndexOf(list, "AAA"), 0);
+    ck_assert_uint_eq(linkedListIndexOf(list, "BBB"), 1);
+    ck_assert_uint_eq(linkedListIndexOf(list, "Non-existent"), -1);
+
+    linkedListDestroy(list);
+}
+END_TEST
+
  
 Suite* list_tests_suite(void) {
     Suite* s = suite_create("List Tests");
@@ -57,6 +74,7 @@ Suite* list_tests_suite(void) {
 
     tcase_add_test(tc_core, test_list_create);
     tcase_add_test(tc_core, test_list_size);
+    tcase_add_test(tc_core, test_list_index_of);
     suite_add_tcase(s, tc_core);
 
     return s;
