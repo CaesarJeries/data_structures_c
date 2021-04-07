@@ -59,6 +59,10 @@ LinkedList* linkedListCreate(copy_func_t copy_func, free_func_t free_func, cmp_f
         // both allocations succeeded
         new_list->head->next = new_list->tail;
         new_list->tail->prev = new_list->head;
+
+        new_list->copy = copy_func;
+        new_list->free = free_func;
+        new_list->compare = compare_func;
     }
 
     return new_list;
@@ -170,7 +174,7 @@ ssize_t linkedListIndexOf(const LinkedList* list, const void* element) {
     return -1;
 }
 
-LinkedListStatus linkedListPush(LinkedList* list, void* element) {
+LinkedListStatus linkedListPush(LinkedList* list, const void* element) {
     assert(list);
 
     void* new_element = list->copy(element);

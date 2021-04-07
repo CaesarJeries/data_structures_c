@@ -30,7 +30,7 @@ void* linkedListRemoveAt(LinkedList* list, size_t index);
 LinkedListStatus linkedListInsertBefore(LinkedList* list, void* anchor, const void* new_element);
 LinkedListStatus linkedListInsertAfter(LinkedList* list, void* anchor, const void* new_element);
 
-LinkedListStatus linkedListPush(LinkedList* list, void* element);
+LinkedListStatus linkedListPush(LinkedList* list, const void* element);
 void* linkedListPop(LinkedList* list);
 
 LinkedListStatus linkedListPushFront(LinkedList* list, void* element);
