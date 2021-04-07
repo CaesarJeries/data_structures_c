@@ -3,7 +3,7 @@
 
 #include "linked_list.h"
 
-typedef struct node {
+typedef struct node { 
     void* data;
 
     struct node* next;
