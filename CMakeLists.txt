@@ -8,3 +8,11 @@ add_library(data_structures SHARED
 )
 
 target_include_directories(data_structures PUBLIC "./include")
+
+set(TEST_LIBS check pthread rt subunit m)
+
+add_executable(linked_list_test ./test/linked_list_test.c)
+target_include_directories(linked_list_test PUBLIC "./include")
+target_link_libraries(linked_list_test ${TEST_LIBS} data_structures)
+
+add_test(data_structures linked_list_test)
