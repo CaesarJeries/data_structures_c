@@ -184,13 +184,13 @@ LinkedListStatus linkedListPush(LinkedList* list, void* element) {
         return LINKED_LIST_MEM_ERROR;
     }
 
-    LinkedList* before_tail = list->tail->prev;
+    LinkedListNode* before_tail = list->tail->prev;
 
     before_tail->next = new_node;
     new_node->prev = before_tail;
 
-    tail->prev = new_node;
-    new_node->next = tail;
+    list->tail->prev = new_node;
+    new_node->next = list->tail;
 
     return LINKED_LIST_SUCCESS;
 }
