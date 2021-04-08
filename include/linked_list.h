@@ -53,4 +53,10 @@ void* linkedListPop(LinkedList* list);
 LinkedListStatus linkedListPushFront(LinkedList* list, void* element);
 void* linkedListPopFront(LinkedList* list);
 
+
+// a function that prints a string representation of the given element
+typedef void (*print_func_t)(const void*);
+
+void linkedListPrint(const LinkedList* list, print_func_t print_element);
+
 #endif // __LINKED_LIST_H__

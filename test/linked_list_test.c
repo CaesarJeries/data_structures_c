@@ -1,4 +1,5 @@
 #include <check.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -220,6 +221,23 @@ START_TEST(test_list_pop_front) {
     linkedListDestroy(list);
 }
 END_TEST
+
+static void str_print(const void* element) {
+    printf("%s", element);
+}
+
+static void test_list_print(void) {
+    LinkedList* list = linkedListCreate(str_copy, str_free, str_cmp);
+
+    linkedListPush(list, "AAA");
+    linkedListPush(list, "BBB");
+    linkedListPush(list, "CCC");
+
+    linkedListPrint(list, str_print);
+    
+    linkedListDestroy(list);
+}
+
 Suite* list_tests_suite(void) {
     Suite* s = suite_create("List Tests");
 
@@ -249,6 +267,9 @@ int main(void) {
     int num_failures = srunner_ntests_failed(sr);
     
     srunner_free(sr);
+
+    printf("Running print test (check visually):\n");
+    test_list_print();
     
     return (num_failures == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

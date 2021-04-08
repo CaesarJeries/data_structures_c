@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <malloc.h>
+#include <stdio.h>
 
 #include "linked_list.h"
 
@@ -316,4 +317,22 @@ void* linkedListPopFront(LinkedList* list) {
     void* data = delete_node(to_delete);
 
    return data; 
+}
+
+void linkedListPrint(const LinkedList* list, print_func_t print_element) {
+    printf("[");
+
+    LinkedListNode* node_itr = list->head->next;
+    size_t counter = linkedListSize(list);
+    while (node_itr != list->tail) {
+        print_element(node_itr->data);
+        if (counter > 1) {
+            printf(", ");
+        }
+
+        --counter;
+        node_itr = node_itr->next;
+    }
+
+    printf("]\n");
 }
