@@ -81,7 +81,143 @@ START_TEST(test_list_get_at) {
     linkedListDestroy(list);
 }
 END_TEST
+
+START_TEST(test_list_remove_at) {
+    LinkedList* list = linkedListCreate(str_copy, str_free, str_cmp);
+
+    ck_assert_ptr_null(linkedListRemoveAt(list, 0));
+    ck_assert_ptr_null(linkedListRemoveAt(list, 23));
+
+    linkedListPush(list, "AAA");
+
+    char* s = linkedListRemoveAt(list, 0);
+
+    ck_assert_str_eq(s, "AAA");
+    free(s); s = NULL;
+
+    linkedListPush(list, "AAA");
+    linkedListPush(list, "BBB");
+    linkedListPush(list, "CCC");
+
+    s = linkedListRemoveAt(list, 1);
+    ck_assert_str_eq(s, "BBB");
+    free(s); s = NULL;
+
+    ck_assert_str_eq(linkedListGetAt(list, 0), "AAA");
+    ck_assert_str_eq(linkedListGetAt(list, 1), "CCC");
+    ck_assert_ptr_null(linkedListGetAt(list, 2));
+    
+    s = linkedListRemoveAt(list, 1);
+    ck_assert_str_eq(s, "CCC");
+    free(s); s = NULL;
+
+    ck_assert_str_eq(linkedListGetAt(list, 0), "AAA");
+    ck_assert_ptr_null(linkedListGetAt(list, 1));
+    ck_assert_ptr_null(linkedListGetAt(list, 2));
+
+    linkedListDestroy(list);
+}
+END_TEST
+
+START_TEST(test_list_push) {
+    LinkedList* list = linkedListCreate(str_copy, str_free, str_cmp);
+
+    linkedListPush(list, "AAA");
+    ck_assert_uint_eq(linkedListSize(list), 1);
+    ck_assert_str_eq(linkedListGetAt(list, 0), "AAA");
+
+    linkedListPush(list, "BBB");
+    ck_assert_uint_eq(linkedListSize(list), 2);
+    ck_assert_str_eq(linkedListGetAt(list, 0), "AAA");
+    ck_assert_str_eq(linkedListGetAt(list, 1), "BBB");
+    
+    linkedListPush(list, "CCC");
+    ck_assert_uint_eq(linkedListSize(list), 3);
+    ck_assert_str_eq(linkedListGetAt(list, 0), "AAA");
+    ck_assert_str_eq(linkedListGetAt(list, 1), "BBB");
+    ck_assert_str_eq(linkedListGetAt(list, 2), "CCC");
+
+    linkedListDestroy(list);
+}
+END_TEST
+
+START_TEST(test_list_pop) {
+    LinkedList* list = linkedListCreate(str_copy, str_free, str_cmp);
+
+    linkedListPush(list, "AAA");
+    linkedListPush(list, "BBB");
+    linkedListPush(list, "CCC");
+
+    char* s = linkedListPop(list);
+    ck_assert_str_eq(s, "CCC");
+    free(s); s = NULL;
+    ck_assert_uint_eq(linkedListSize(list), 2);
+    
+    s = linkedListPop(list);
+    ck_assert_str_eq(s, "BBB");
+    free(s); s = NULL;
+    ck_assert_uint_eq(linkedListSize(list), 1);
+
+    s = linkedListPop(list);
+    ck_assert_str_eq(s, "AAA");
+    free(s); s = NULL;
+    ck_assert_uint_eq(linkedListSize(list), 0);
+
+    ck_assert_ptr_null(linkedListPop(list));
+
+    linkedListDestroy(list);
+}
+END_TEST
  
+START_TEST(test_list_push_front) {
+    LinkedList* list = linkedListCreate(str_copy, str_free, str_cmp);
+
+    linkedListPushFront(list, "AAA");
+    ck_assert_uint_eq(linkedListSize(list), 1);
+    ck_assert_str_eq(linkedListGetAt(list, 0), "AAA");
+
+    linkedListPushFront(list, "BBB");
+    ck_assert_uint_eq(linkedListSize(list), 2);
+    ck_assert_str_eq(linkedListGetAt(list, 1), "AAA");
+    ck_assert_str_eq(linkedListGetAt(list, 0), "BBB");
+    
+    linkedListPushFront(list, "CCC");
+    ck_assert_uint_eq(linkedListSize(list), 3);
+    ck_assert_str_eq(linkedListGetAt(list, 2), "AAA");
+    ck_assert_str_eq(linkedListGetAt(list, 1), "BBB");
+    ck_assert_str_eq(linkedListGetAt(list, 0), "CCC");
+
+    linkedListDestroy(list);
+}
+END_TEST
+
+START_TEST(test_list_pop_front) {
+    LinkedList* list = linkedListCreate(str_copy, str_free, str_cmp);
+
+    linkedListPush(list, "AAA");
+    linkedListPush(list, "BBB");
+    linkedListPush(list, "CCC");
+
+    char* s = linkedListPopFront(list);
+    ck_assert_str_eq(s, "AAA");
+    free(s); s = NULL;
+    ck_assert_uint_eq(linkedListSize(list), 2);
+    
+    s = linkedListPopFront(list);
+    ck_assert_str_eq(s, "BBB");
+    free(s); s = NULL;
+    ck_assert_uint_eq(linkedListSize(list), 1);
+
+    s = linkedListPopFront(list);
+    ck_assert_str_eq(s, "CCC");
+    free(s); s = NULL;
+    ck_assert_uint_eq(linkedListSize(list), 0);
+
+    ck_assert_ptr_null(linkedListPopFront(list));
+
+    linkedListDestroy(list);
+}
+END_TEST
 Suite* list_tests_suite(void) {
     Suite* s = suite_create("List Tests");
 
@@ -92,6 +228,11 @@ Suite* list_tests_suite(void) {
     tcase_add_test(tc_core, test_list_size);
     tcase_add_test(tc_core, test_list_index_of);
     tcase_add_test(tc_core, test_list_get_at);
+    tcase_add_test(tc_core, test_list_remove_at);
+    tcase_add_test(tc_core, test_list_push);
+    tcase_add_test(tc_core, test_list_pop);
+    tcase_add_test(tc_core, test_list_push_front);
+    tcase_add_test(tc_core, test_list_pop_front);
     suite_add_tcase(s, tc_core);
 
     return s;

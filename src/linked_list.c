@@ -28,6 +28,23 @@ static void nodeDestroy(LinkedListNode* node, free_func_t free_func) {
     }
 }
 
+// used for internal node (not sentinel nodes), therefor, next/prev
+// are never NULL
+static void unlink(LinkedListNode* node) {
+    node->prev->next = node->next;
+    node->next->prev = node->prev;
+
+    node->prev = node->next = NULL;
+}
+
+static void* delete_node(LinkedListNode* node) {
+    void* data = node->data;
+
+    unlink(node); 
+    nodeDestroy(node, NULL);
+
+    return data;
+}
 
 struct __linked_list {
     LinkedListNode* head;
@@ -200,6 +217,27 @@ void* linkedListGetAt(const LinkedList* list, size_t index) {
     return params.target;
 }
 
+void* linkedListRemoveAt(LinkedList* list, size_t index) {
+    void* element = NULL;
+    LinkedListNode* node_itr = list->head->next;
+    size_t index_itr = 0;
+    while (node_itr != list->tail) {
+        if (index == index_itr) {
+            // delete node and return the pointer to the contained element
+            unlink(node_itr);
+            element = node_itr->data;
+            nodeDestroy(node_itr, NULL);
+
+            break;
+        }
+
+        node_itr = node_itr->next;
+        ++index_itr;
+    }
+
+    return element;
+}
+
 LinkedListStatus linkedListPush(LinkedList* list, const void* element) {
     assert(list);
 
@@ -225,6 +263,7 @@ LinkedListStatus linkedListPush(LinkedList* list, const void* element) {
     return LINKED_LIST_SUCCESS;
 }
 
+
 void* linkedListPop(LinkedList* list) {
     assert(list);
 
@@ -234,14 +273,47 @@ void* linkedListPop(LinkedList* list) {
     }
 
     LinkedListNode* to_delete = list->tail->prev;
-    LinkedListNode* before_tail = to_delete->prev;
-    void* data = to_delete->data;
-    
-    to_delete->data = NULL;
-    nodeDestroy(to_delete, NULL); to_delete = NULL;
+    void* data = delete_node(to_delete);
 
-    before_tail->next = list->tail;
-    list->tail->prev = before_tail;
+   return data; 
+}
+
+LinkedListStatus linkedListPushFront(LinkedList* list, void* element) {
+    assert(list);
+
+    void* new_element = list->copy(element);
+    if (!new_element) {
+        return LINKED_LIST_MEM_ERROR;
+    }
+
+    LinkedListNode* new_node = nodeCreate(new_element);
+    if (!new_node) {
+        list->free(new_element);
+        return LINKED_LIST_MEM_ERROR;
+    }
+
+    LinkedListNode* after_head = list->head->next;
+
+    list->head->next = new_node;
+    new_node->prev = list->head;
+
+    after_head->prev = new_node;
+    new_node->next = after_head;
+
+    return LINKED_LIST_SUCCESS;
+
+}
+
+void* linkedListPopFront(LinkedList* list) {
+    assert(list);
+
+    if (list->head->next == list->tail) {
+        // list is empty
+        return NULL;
+    }
+
+    LinkedListNode* to_delete = list->head->next;
+    void* data = delete_node(to_delete);
 
    return data; 
 }

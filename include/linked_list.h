@@ -51,6 +51,6 @@ void* linkedListRemoveAt(LinkedList* list, size_t index);
 LinkedListStatus linkedListPush(LinkedList* list, const void* element);
 void* linkedListPop(LinkedList* list);
 LinkedListStatus linkedListPushFront(LinkedList* list, void* element);
-void* linkedListPopFront(LinkedList* list, LinkedListStatus* status);
+void* linkedListPopFront(LinkedList* list);
 
 #endif // __LINKED_LIST_H__
