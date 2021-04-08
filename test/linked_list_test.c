@@ -92,6 +92,8 @@ START_TEST(test_list_remove_at) {
 
     char* s = linkedListRemoveAt(list, 0);
 
+    ck_assert_uint_eq(linkedListSize(list), 0);
+
     ck_assert_str_eq(s, "AAA");
     free(s); s = NULL;
 
@@ -122,7 +124,7 @@ END_TEST
 START_TEST(test_list_push) {
     LinkedList* list = linkedListCreate(str_copy, str_free, str_cmp);
 
-    linkedListPush(list, "AAA");
+    ck_assert_int_eq(linkedListPush(list, "AAA"), LINKED_LIST_SUCCESS);
     ck_assert_uint_eq(linkedListSize(list), 1);
     ck_assert_str_eq(linkedListGetAt(list, 0), "AAA");
 
@@ -172,7 +174,7 @@ END_TEST
 START_TEST(test_list_push_front) {
     LinkedList* list = linkedListCreate(str_copy, str_free, str_cmp);
 
-    linkedListPushFront(list, "AAA");
+    ck_assert_int_eq(linkedListPushFront(list, "AAA"), LINKED_LIST_SUCCESS);
     ck_assert_uint_eq(linkedListSize(list), 1);
     ck_assert_str_eq(linkedListGetAt(list, 0), "AAA");
 
