@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.18.4)
+set(CMAKE_C_STANDARD 99)
 
 # specify that the project is implemented in pure C
 project(data_structures C)
